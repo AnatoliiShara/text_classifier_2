@@ -1,8 +1,11 @@
+import os
 import joblib
-from utils import preprocess_text
+from src.utils import preprocess_text
 
-def load_model():
-    return joblib.load('models/best_classifier.joblib')
+def load_model(model_path='models/best_classifier.joblib'):
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found: {model_path}")
+    return joblib.load(model_path)
 
 def predict_sentiment(text, model=None):
     if model is None:

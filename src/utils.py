@@ -1,15 +1,16 @@
 import re 
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+import spacy
+import spacy.cli
 
-nltk.download('stopwords')
-nltk.download('punkt')
-
+try:
+    nlp = spacy.load('uk_core_news_sm')
+except OSError:
+    print("Downloading the Ukrainian model...")
+    spacy.cli.download('uk_core_news_sm')
+    nlp = spacy.load('uk_core_news_sm')
+    
 def preprocess_text(text):
     text = text.lower()
-    text = re/sub(r'[^\w\s]', '', text)
-    tokens = word_tokenize(text)
-    stop_words = set(stopwords.words('ukrainian'))
-    tokens = [token for token in tokens if token not in stop_words]
-    return ' '.join(tokens)
+    text = re.sub(r'[^\w\s]', '', text)
+    text = ' '.join([token.lemma_ for token in nlp(text) if not token.is_stop])
+    return text
